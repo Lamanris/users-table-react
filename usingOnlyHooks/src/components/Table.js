@@ -6,6 +6,7 @@ const Table = () => {
     const [users, setUsers] = useState([])
     const [isAllChecked, setIsAllChecked] = useState(false)
     const [usersNames, setUsersNames] = useState([])
+    const [filterSearch, setFilterSearch] = useState('')
 
     const headings = [{'key': 'firstName', 'value': 'Firstname'}, {'key': 'lastName', 'value': 'Lastname'}, {'key': 'emailAddress', 'value': 'Email'},]
 
@@ -17,13 +18,14 @@ const Table = () => {
     const checkAll = () => {
         setIsAllChecked(!isAllChecked)
         if (!isAllChecked) {
-            let allUsersNames = [...new Set([...usersNames, ...(users.map(el => el.name.split(' ')[0]))])]
+            let allUsersNames = [...new Set([...usersNames, ...(filteredUsers.map(el => el.name.split(' ')[0]))])]
             setUsersNames(allUsersNames)
         } else {
             setUsersNames([])
         }
-
     }
+
+    let filteredUsers = [...users].filter(el => el.name.toLowerCase().includes(filterSearch.toLowerCase()))
 
     return (
         <div className="container mx-auto py-6 px-4">
@@ -33,6 +35,7 @@ const Table = () => {
                 <div className="flex-1 pr-4">
                     <div className="relative md:w-1/3">
                         <input type="search"
+                               onChange={(e) => setFilterSearch(e.target.value)}
                                className="w-full pl-10 pr-4 py-2 rounded-lg shadow focus:outline-none focus:shadow-outline text-gray-600 font-medium"
                                placeholder="Search..."/>
                         <div className="absolute top-0 left-0 inline-flex items-center p-2">
@@ -69,7 +72,7 @@ const Table = () => {
                     </thead>
                     <tbody>
                     {
-                        users?.map(user => (
+                        filteredUsers?.map(user => (
                             <User key={user.id} user={user} isAllChecked={isAllChecked} setIsAllChecked={setIsAllChecked} setUsersNames={setUsersNames} usersNames={usersNames}/>
                         ))
                     }
